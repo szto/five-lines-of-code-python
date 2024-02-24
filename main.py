@@ -84,27 +84,36 @@ def update():
     global inputs, map
     while inputs:
         current = inputs.pop()
-        if current == Input.LEFT:
-            moveHorizontal(-1)
-        elif current == Input.RIGHT:
-            moveHorizontal(1)
-        elif current == Input.UP:
-            moveVertical(-1)
-        elif current == Input.DOWN:
-            moveVertical(1)
+        handel_input(current)
 
     for y in range(len(map) - 1, -1, -1):
         for x, cell in enumerate(map[y]):
-            if cell in [Tile.STONE, Tile.FALLING_STONE] and map[y + 1][x] == Tile.AIR:
-                map[y + 1][x] = Tile.FALLING_STONE
-                map[y][x] = Tile.AIR
-            elif cell in [Tile.BOX, Tile.FALLING_BOX] and map[y + 1][x] == Tile.AIR:
-                map[y + 1][x] = Tile.FALLING_BOX
-                map[y][x] = Tile.AIR
-            elif cell == Tile.FALLING_STONE:
-                map[y][x] = Tile.STONE
-            elif cell == Tile.FALLING_BOX:
-                map[y][x] = Tile.BOX
+            update_tile(cell, map, x, y)
+
+
+def handel_input(current):
+    if current == Input.LEFT:
+        moveHorizontal(-1)
+    elif current == Input.RIGHT:
+        moveHorizontal(1)
+    elif current == Input.UP:
+        moveVertical(-1)
+    elif current == Input.DOWN:
+        moveVertical(1)
+
+
+def update_tile(cell, map, x, y):
+    if cell in [Tile.STONE, Tile.FALLING_STONE] and map[y + 1][x] == Tile.AIR:
+        map[y + 1][x] = Tile.FALLING_STONE
+        map[y][x] = Tile.AIR
+    elif cell in [Tile.BOX, Tile.FALLING_BOX] and map[y + 1][x] == Tile.AIR:
+        map[y + 1][x] = Tile.FALLING_BOX
+        map[y][x] = Tile.AIR
+    elif cell == Tile.FALLING_STONE:
+        map[y][x] = Tile.STONE
+    elif cell == Tile.FALLING_BOX:
+        map[y][x] = Tile.BOX
+
 
 def draw(screen):
     screen_init(screen)
