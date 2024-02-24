@@ -107,7 +107,20 @@ def update():
                 map[y][x] = Tile.BOX
 
 def draw(screen):
+    screen_init(screen)
+    draw_map(screen)
+    draw_player(screen)
+
+
+def screen_init(screen):
     screen.fill((0, 0, 0))
+
+
+def draw_player(screen):
+    pygame.draw.rect(screen, (255, 0, 0), (playerx * TILE_SIZE, playery * TILE_SIZE, TILE_SIZE, TILE_SIZE))
+
+
+def draw_map(screen):
     tile_colors = {
         Tile.FLUX: (204, 255, 204),
         Tile.UNBREAKABLE: (153, 153, 153),
@@ -120,15 +133,12 @@ def draw(screen):
         Tile.KEY2: (0, 204, 255),
         Tile.LOCK2: (0, 204, 255),
     }
-
     for y, row in enumerate(map):
         for x, cell in enumerate(row):
             color = tile_colors.get(cell, (0, 0, 0))
             if cell != Tile.AIR:
                 pygame.draw.rect(screen, color, (x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE))
 
-    # Draw player
-    pygame.draw.rect(screen, (255, 0, 0), (playerx * TILE_SIZE, playery * TILE_SIZE, TILE_SIZE, TILE_SIZE))
 
 def main():
     pygame.init()
