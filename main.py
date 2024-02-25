@@ -1,3 +1,5 @@
+from typing import Protocol
+
 import pygame
 from enum import Enum, auto
 from pygame.locals import *
@@ -26,6 +28,58 @@ class Input(Enum):
     DOWN = auto()
     LEFT = auto()
     RIGHT = auto()
+
+class Input2(Protocol):
+    def is_right(self) -> bool:
+        """Return True if the right button is pressed."""
+    def is_left(self) -> bool:
+        """Return True if the left button is pressed."""
+    def is_up(self) -> bool:
+        """Return True if the up button is pressed."""
+    def is_down(self) -> bool:
+        """Return True if the down button is pressed."""
+
+class Left:
+    def is_right(self) -> bool:
+        return False
+    def is_left(self) -> bool:
+        return True
+    def is_up(self) -> bool:
+        return False
+    def is_down(self) -> bool:
+        return False
+
+class Right:
+    def is_right(self) -> bool:
+        return True
+    def is_left(self) -> bool:
+        return False
+    def is_up(self) -> bool:
+        return False
+    def is_down(self) -> bool:
+        return False
+
+
+class Up:
+    def is_right(self) -> bool:
+        return False
+    def is_left(self) -> bool:
+        return False
+    def is_up(self) -> bool:
+        return True
+    def is_down(self) -> bool:
+        return False
+
+class Down:
+    def is_right(self) -> bool:
+        return False
+    def is_left(self) -> bool:
+        return False
+    def is_up(self) -> bool:
+        return False
+    def is_down(self) -> bool:
+        return True
+
 
 # Initial game state
 playerx, playery = 1, 1
@@ -91,14 +145,14 @@ def update():
             update_tile(cell, map, x, y)
 
 
-def handel_input(current):
-    if current == Input.LEFT:
+def handel_input(current: Input2):
+    if current.is_left():
         moveHorizontal(-1)
-    elif current == Input.RIGHT:
+    elif current.is_right():
         moveHorizontal(1)
-    elif current == Input.UP:
+    elif current.is_up():
         moveVertical(-1)
-    elif current == Input.DOWN:
+    elif current.is_down():
         moveVertical(1)
 
 
@@ -162,13 +216,13 @@ def main():
                 running = False
             elif event.type == KEYDOWN:
                 if event.key in [K_LEFT, K_a]:
-                    inputs.append(Input.LEFT)
+                    inputs.append(Left())
                 elif event.key in [K_UP, K_w]:
-                    inputs.append(Input.UP)
+                    inputs.append(Up())
                 elif event.key in [K_RIGHT, K_d]:
-                    inputs.append(Input.RIGHT)
+                    inputs.append(Right())
                 elif event.key in [K_DOWN, K_s]:
-                    inputs.append(Input.DOWN)
+                    inputs.append(Down())
 
         update()
         draw(screen)
