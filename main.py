@@ -23,13 +23,7 @@ class Tile(Enum):
     KEY2 = auto()
     LOCK2 = auto()
 
-class Input(Enum):
-    UP = auto()
-    DOWN = auto()
-    LEFT = auto()
-    RIGHT = auto()
-
-class Input2(Protocol):
+class Input(Protocol):
     def is_right(self) -> bool:
         """Return True if the right button is pressed."""
     def is_left(self) -> bool:
@@ -38,6 +32,8 @@ class Input2(Protocol):
         """Return True if the up button is pressed."""
     def is_down(self) -> bool:
         """Return True if the down button is pressed."""
+    def handle_input(self):
+        """Handle the input."""
 
 class Left:
     def is_right(self) -> bool:
@@ -48,6 +44,8 @@ class Left:
         return False
     def is_down(self) -> bool:
         return False
+    def handle_input(self):
+        moveHorizontal(-1)
 
 class Right:
     def is_right(self) -> bool:
@@ -58,6 +56,8 @@ class Right:
         return False
     def is_down(self) -> bool:
         return False
+    def handle_input(self):
+        moveHorizontal(1)
 
 
 class Up:
@@ -69,6 +69,9 @@ class Up:
         return True
     def is_down(self) -> bool:
         return False
+    def handle_input(self):
+        moveVertical(-1)
+
 
 class Down:
     def is_right(self) -> bool:
@@ -79,6 +82,8 @@ class Down:
         return False
     def is_down(self) -> bool:
         return True
+    def handle_input(self):
+        moveVertical(1)
 
 
 # Initial game state
@@ -138,22 +143,15 @@ def update():
     global inputs, map
     while inputs:
         current = inputs.pop()
-        handel_input(current)
+        handle_input(current)
 
     for y in range(len(map) - 1, -1, -1):
         for x, cell in enumerate(map[y]):
             update_tile(cell, map, x, y)
 
 
-def handel_input(current: Input2):
-    if current.is_left():
-        moveHorizontal(-1)
-    elif current.is_right():
-        moveHorizontal(1)
-    elif current.is_up():
-        moveVertical(-1)
-    elif current.is_down():
-        moveVertical(1)
+def handle_input(current: Input):
+    current.handle_input()
 
 
 def update_tile(cell, map, x, y):
